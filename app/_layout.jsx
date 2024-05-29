@@ -1,19 +1,16 @@
-// app/_layout.tsx
-import { Stack } from 'expo-router';
+import { Stack } from "expo-router";
 
-export default function Layout() {
+export default function RootLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerShown:false,
-        headerStyle: {
-          backgroundColor: '#f4511e',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-      }}
-    />
+    <Stack screenOptions={{headerShown:false}} >
+      <Stack.Screen 
+      name="index" 
+      options={
+        {
+          // headerTitle:""
+          headerShown:false
+        }
+      }/>
+    </Stack>
   );
 }
