@@ -5,7 +5,7 @@ import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyC88SWnz7cN2q83vHT10Hsntv8qAK8fuNg",
+    apiKey: "",
     authDomain: "education-app-215.firebaseapp.com",
     projectId: "education-app-215",
     storageBucket: "education-app-215.appspot.com",
