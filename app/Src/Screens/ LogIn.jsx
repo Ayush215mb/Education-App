@@ -9,21 +9,45 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 const LogIn=()=> {
     const [email, setEmail] = useState("");//empty string
     const [password, setPassword] = useState("");//empty string
+    let [errors,setErrors]= useState({});
     const router = useRouter();
 
+    const validateform = () => {
+        errors = {}
+    
+        if (email=="")  errors.email = "email is required";
+    
+        if (password=="")  errors.password = "password is required";
+    
+        setErrors(errors)
+    
+        return Object.keys(errors).length === 0;//this line of code checks if the object named errors is empty or not, It returns true if the errors object is empty
+      }
+
     const LoginBtn= ()=>{
-        signInWithEmailAndPassword(auth, email, password)
-        .then(async (userCredential) => {
-            // Signed in 
-            const user = userCredential.user;
-            console.log("Loginnnn successful!")
-            router.push(`/Src/Screens/Home`)
-             // ...
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-  });
+        if (validateform()){
+            signInWithEmailAndPassword(auth, email, password)
+            .then(async (userCredential) => {
+                // Signed in 
+                const user = userCredential.user;
+                console.log("Login successful!")
+                router.push(`/Src/Screens/Home`)
+                
+                 
+            })
+            .catch((error) => {
+                // const errorCode = error.code;
+                // const errorMessage = error.message;
+                alert("User Not found!\nClick on the Sign Up Button");
+                
+            });
+            setEmail("");
+            setPassword("");
+           
+            
+
+        }
+
     }
   return (
     <View style={{ backgroundColor: "white",flex:1 }}>
@@ -40,6 +64,8 @@ const LogIn=()=> {
                 onChangeText={setEmail}
                 autoCapitalize="none"
                 />
+                
+                 { errors.email ? <Text style={Styles.errortext}>{errors.email}</Text>:null}
            </View>
            <View style={{ paddingHorizontal: 10, paddingTop: 10 }}>
              <TextInput
@@ -49,6 +75,10 @@ const LogIn=()=> {
                 onChangeText={setPassword}
                 // secureTextEntry
              />
+                {errors.password ? (
+                    <Text style={Styles.errortext}>{errors.password}</Text>
+                    ) : null
+                 }
             </View>
             <Pressable onPress={LoginBtn}>
                 <View style={Styles.ButtonView}>              
@@ -141,6 +171,10 @@ const Styles= StyleSheet.create(
             paddingHorizontal:50,
             borderRadius:30,
       
-        }
+        },
+        errortext: {
+            color: "red",
+            paddingLeft:5,
+          }
     }
 )
