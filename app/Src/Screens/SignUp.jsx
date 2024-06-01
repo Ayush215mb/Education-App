@@ -2,6 +2,7 @@ import { View, Text,SafeAreaView,Image,StyleSheet,TextInput,Button } from 'react
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import {auth} from '../../Firebase-Auth/firebaseconfig'
+import { useRouter } from 'expo-router';
 
 
 
@@ -10,28 +11,43 @@ const SignUp=()=> {
   const [username,setUsername]= useState("");
   const [email,setEmail]= useState("");
   const [password,setPassword]= useState("");
-  const [error,setErrors]= useState({});
+  let [errors,setErrors]= useState({});
+  const router = useRouter();
 
+  const validateform = () => {
+    errors = {}
+    if (Name=="")  errors.Name = "Name is required";
+    if (username=="")  errors.username = "username is required";
+    if (email=="")  errors.email = "email is required";
+    if (password=="")  errors.password = "password is required";
 
+    setErrors(errors)
+
+    return Object.keys(errors).length === 0;//this line of code checks if the object named errors is empty or not, It returns true if the errors object is empty
+  }
 
   
-  const handlesignup = () => {
-    //if there are no errors then the validateform funcn returns true thus the next step will be taken
-    createUserWithEmailAndPassword(auth, email, password)
-      .then( async (userCredential) => {
-        // Signed up 
-        const user = userCredential.user;
-        console.log('Registered with:', user.email);
-        // ...
-      })
+  const handlesignup = () => 
+    {
+      //if there are no errors then the validateform funcn returns true thus the next step will be taken
+      if(validateform()){
+        createUserWithEmailAndPassword(auth, email, password)
+        .then( async (userCredential) => 
+          {
+            // Signed up 
+            const user = userCredential.user;
+            console.log('Registered with:', user.email);
+            console.log("Name of the user:",user.displayName);
+            // alert("Sign Up Successful!");
+            router.push(`/Src/Screens/Home`);
+        
+        
+          })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
-      });
-
-      alert("Sign Up Successful!")
-
+        // const errorCode = error.code;
+        // const errorMessage = error.message;
+        alert("Alreday Signed Up!");
+        });
       setName("");
       setUsername("");
       setEmail("");
@@ -40,10 +56,7 @@ const SignUp=()=> {
     
   }
 
-
-
-
-
+    }
 
 
   return (
@@ -58,8 +71,8 @@ const SignUp=()=> {
             style={Styles.nameinput}
             value={Name}
             onChangeText={setName}
-          
           />
+          { errors.Name ? <Text style={Styles.errortext}>{errors.Name}</Text>:null}
         </View>
         <View style={{alignItems:"center",}}>
           <TextInput 
@@ -69,6 +82,7 @@ const SignUp=()=> {
             onChangeText={setUsername}
           
           />
+          { errors.username ? <Text style={Styles.errortext}>{errors.username}</Text>:null}
         </View>
         <View style={{alignItems:"center",}}>
           <TextInput 
@@ -77,6 +91,7 @@ const SignUp=()=> {
             value={email}
             onChangeText={setEmail}
           />
+          { errors.email ? <Text style={Styles.errortext}>{errors.email}</Text>:null}
         </View>
         <View style={{alignItems:"center",}}>
           <TextInput 
@@ -85,6 +100,7 @@ const SignUp=()=> {
             value={password}
             onChangeText={setPassword}
           />
+          { errors.password ? <Text style={Styles.errortext}>{errors.password}</Text>:null}
         </View>
 
         <Button title="submit" onPress={handlesignup } />
@@ -124,6 +140,11 @@ const Styles= StyleSheet.create(
       // alignSelf:"center"
       
       
+    },
+    errortext: {
+      display:"flex",
+      color: "red",
+      paddingLeft:5,
     }
     
   }
